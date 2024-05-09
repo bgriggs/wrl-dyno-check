@@ -7,7 +7,21 @@
     <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Title>WRL Dyno Flat Curve Check</Title>
+    <Authors>Brian Griggs</Authors>
+    <Company>Big Mission Motorsports</Company>
+    <Description>Checks dyno runs for compliance with WRL flat curve rule.</Description>
+    <Copyright>2024</Copyright>
+    <PackageProjectUrl>https://github.com/bgriggs/wrl-dyno-ckeck</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/bgriggs/wrl-dyno-ckeck</RepositoryUrl>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" Version="11.0.10" />

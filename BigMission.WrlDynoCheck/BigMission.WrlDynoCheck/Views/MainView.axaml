@@ -3,14 +3,34 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:BigMission.WrlDynoCheck.ViewModels"
+			 xmlns:lc="clr-namespace:BigMission.Avalonia.LogViewer;assembly=BigMission.Avalonia.LogViewer"
+			 xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BigMission.WrlDynoCheck.Views.MainView"
              x:DataType="vm:MainViewModel">
-  <Design.DataContext>
-    <!-- This only sets the DataContext for the previewer in an IDE,
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-    <vm:MainViewModel />
-  </Design.DataContext>
+		<!--<vm:MainViewModel />-->
+	</Design.DataContext>
+	<Grid RowDefinitions="Auto,*,Auto,Auto" ColumnDefinitions="Auto,*">
 
-  <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+		<ListBox x:Name="runs" Grid.Row="1" Grid.Column="0" BorderBrush="Black" Width="180" Margin="3"
+				 ItemsSource="{Binding Runs}" SelectedItem="{Binding SelectedRun}">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Text="{Binding Name}" Margin="3"/>
+						<Button Content="Delete"/>
+					</StackPanel>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+
+		<lvc:CartesianChart MinWidth="600" MinHeight="300" Grid.Row="1" Grid.Column="1" IsVisible="{Binding HasRun}" LegendPosition="Right" DataContext="{Binding SelectedRun}"
+							Series="{Binding Series}" YAxes="{Binding YAxes}" XAxes="{Binding XAxes}" />
+	
+		<TextBlock Text="Logs" Classes="theme-text-heading size-sm" Margin="12,12,3,3" Grid.Row="2"/>
+		<lc:LogViewerControl DataContext="{Binding LogViewer}" Grid.Row="3" Grid.ColumnSpan="2" Height="250"/>
+	</Grid>
 </UserControl>
