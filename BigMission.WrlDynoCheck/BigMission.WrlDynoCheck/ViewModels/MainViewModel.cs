@@ -1,5 +1,7 @@
 ﻿using Avalonia.Threading;
 using BigMission.WrlDynoCheck.Models;
+using BigMission.WrlDynoCheck.Services;
+using BigMission.WrlDynoCheck.Utilities;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using LogViewer.Core.ViewModels;
@@ -7,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace BigMission.WrlDynoCheck.ViewModels;
 
@@ -31,20 +34,15 @@ public partial class MainViewModel : CommunityToolkit.Mvvm.ComponentModel.Observ
     /// <summary>
     /// Time to wait after last channel update to complete the run.
     /// </summary>
-    private readonly TimeSpan runTimeout = TimeSpan.FromSeconds(3);
+    private readonly TimeSpan runTimeout = TimeSpan.FromSeconds(2);
+    private readonly ISettingsProvider settings;
 
-
-    public MainViewModel(ILoggerFactory loggerFactory, LogViewerControlViewModel logViewer)
+    public MainViewModel(ILoggerFactory loggerFactory, LogViewerControlViewModel logViewer, ISettingsProvider settings)
     {
         Logger = loggerFactory.CreateLogger(GetType().Name);
         LogViewer = logViewer;
-
-        var demoRun = new DynoRunViewModel
-        {
-            Name = "Demo Run"
-        };
-        Runs.Add(demoRun);
-        SelectedRun = demoRun;
+        this.settings = settings;
+        WeakReferenceMessenger.Default.RegisterAll(this);
     }
 
     public async void Receive(ChannelValue message)
@@ -89,7 +87,7 @@ public partial class MainViewModel : CommunityToolkit.Mvvm.ComponentModel.Observ
         }
         catch { }
 
-        await Dispatcher.UIThread.InvokeAsync(() => 
+        await Dispatcher.UIThread.InvokeAsync(() =>
         {
             Logger.LogInformation("Run completed");
             if (currentRun != null)
@@ -103,5 +101,42 @@ public partial class MainViewModel : CommunityToolkit.Mvvm.ComponentModel.Observ
                 Logger.LogWarning("No run fount to complete");
             }
         });
+    }
+
+    public async Task LoadCsv(string file, string runName)
+    {
+        var csv = new CsvFile(file);
+        await csv.Load();
+
+        var rpmChannelName = settings.GetAppSetting("Dynojet:RpmChannel") ?? "(DWRT CPU) Engine RPM";
+        var hpChannelName = settings.GetAppSetting("Dynojet:HpChannel") ?? "(DWRT CPU) Power";
+
+        var rpmIndex = Array.FindIndex(csv.Headers, h => string.Compare(h.Trim(), rpmChannelName.Trim(), true) == 0);
+        var powerIndex = Array.FindIndex(csv.Headers, h => string.Compare(h.Trim(), hpChannelName.Trim(), true) == 0);
+        var timeIndex = Array.FindIndex(csv.Headers, h => string.Compare(h.Trim(), "Time", true) == 0);
+
+        if (rpmIndex < 0 || powerIndex < 0 || timeIndex < 0)
+        {
+            Logger.LogError("RPM, Power, or Time channel not found in CSV file.");
+            return;
+        }
+
+        var run = new DynoRunViewModel { Name = runName };
+
+        foreach (var row in csv.Rows)
+        {
+
+            if (double.TryParse(row[timeIndex], out double timeOffset) && float.TryParse(row[rpmIndex], out float rpm) && float.TryParse(row[powerIndex], out float power))
+            {
+                var time = DateTime.Now.AddSeconds(timeOffset);
+                run.Rpm.Add(time, new ChannelValue(ChannelType.RPM, rpm, time));
+                run.Power.Add(time, new ChannelValue(ChannelType.Power, power, time));
+            }
+        }
+
+        run.Process();
+
+        Runs.Add(run);
+        SelectedRun = run;
     }
 }

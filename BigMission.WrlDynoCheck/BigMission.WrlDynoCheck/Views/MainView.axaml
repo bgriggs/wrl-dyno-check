@@ -15,7 +15,14 @@
 	</Design.DataContext>
 	<Grid RowDefinitions="Auto,*,Auto,Auto" ColumnDefinitions="Auto,*">
 
-		<ListBox x:Name="runs" Grid.Row="1" Grid.Column="0" BorderBrush="Black" Width="180" Margin="3"
+		<StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" DataContext="{Binding SelectedRun}">
+			<TextBlock Text="{Binding Penalty, StringFormat='Flat Curve Penalty: {0}'}" Margin="3"/>
+			<TextBlock Text="{Binding PeakPower, StringFormat='Peak Power: {0}'}" Margin="3"/>
+			<TextBlock Text="{Binding LowerRange, StringFormat='Lower Range: {0}'}" Margin="3"/>
+			<TextBlock Text="{Binding UpperRange, StringFormat='Upper Range: {0}'}" Margin="3"/>
+		</StackPanel>
+		
+		<ListBox x:Name="runs" Grid.Row="1" Grid.Column="0" BorderBrush="Black" Width="220" Margin="3"
 				 ItemsSource="{Binding Runs}" SelectedItem="{Binding SelectedRun}">
 			<ListBox.ItemTemplate>
 				<DataTemplate>
