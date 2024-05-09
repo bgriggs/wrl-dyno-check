@@ -21,6 +21,7 @@ public partial class MainViewModel : CommunityToolkit.Mvvm.ComponentModel.Observ
     public ObservableCollection<DynoRunViewModel> Runs { get; } = new();
     private DynoRunViewModel? currentRun;
     private Timer? runTimeoutTimer;
+    private int messageCount;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasRun))]
@@ -43,16 +44,22 @@ public partial class MainViewModel : CommunityToolkit.Mvvm.ComponentModel.Observ
         LogViewer = logViewer;
         this.settings = settings;
         WeakReferenceMessenger.Default.RegisterAll(this);
+
+        var demoRun = new DynoRunViewModel { Name = "Demo Run" };
+        Runs.Add(demoRun);
+        SelectedRun = demoRun;
     }
 
-    public async void Receive(ChannelValue message)
+    public void Receive(ChannelValue message)
     {
-        await Dispatcher.UIThread.InvokeAsync(() => ProcessChannelValue(message));
+        //await Dispatcher.UIThread.InvokeAsync(() => ProcessChannelValue(message));
+        ProcessChannelValue(message);
     }
 
     private void ProcessChannelValue(ChannelValue message)
     {
         currentRun ??= new();
+        messageCount++;
 
         if (message.ChannelType == ChannelType.RPM)
         {
@@ -63,9 +70,17 @@ public partial class MainViewModel : CommunityToolkit.Mvvm.ComponentModel.Observ
             currentRun.Power.Add(message.Time, message);
         }
 
-        RunTimeoutTimerReset();
+        if (messageCount % 10 == 0)
+        {
+            Logger.LogInformation($"Received {messageCount} channel updates.");
+            RunTimeoutTimerReset();
+        }
     }
 
+    /// <summary>
+    /// Reset the time each time a channel value is received. 
+    /// When channel updates stop, the run will be completed after the timeout.
+    /// </summary>
     private void RunTimeoutTimerReset()
     {
         if (runTimeoutTimer != null)
@@ -93,6 +108,7 @@ public partial class MainViewModel : CommunityToolkit.Mvvm.ComponentModel.Observ
             if (currentRun != null)
             {
                 Runs.Add(currentRun);
+                SelectedRun = currentRun;
                 currentRun.Process();
                 currentRun = null;
             }
@@ -125,7 +141,6 @@ public partial class MainViewModel : CommunityToolkit.Mvvm.ComponentModel.Observ
 
         foreach (var row in csv.Rows)
         {
-
             if (double.TryParse(row[timeIndex], out double timeOffset) && float.TryParse(row[rpmIndex], out float rpm) && float.TryParse(row[powerIndex], out float power))
             {
                 var time = DateTime.Now.AddSeconds(timeOffset);

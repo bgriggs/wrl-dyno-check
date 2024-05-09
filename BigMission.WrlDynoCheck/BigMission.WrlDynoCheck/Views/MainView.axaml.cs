@@ -17,6 +17,9 @@ public partial class MainView : UserControl
         if (DataContext is MainViewModel vm)
         {
             await vm.LoadCsv("DemoRuns\\134Power.csv", "Demo Run");
+
+            // Remove the placeholder demo run
+            vm.Runs.RemoveAt(0);
         }
     }
 }
