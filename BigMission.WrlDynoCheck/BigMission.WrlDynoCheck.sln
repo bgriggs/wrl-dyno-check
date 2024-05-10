@@ -10,7 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8A31D2EA-D75A-448E-B8A3-0A9106AC3BB4}"
 	ProjectSection(SolutionItems) = preProject
 		nuget.config = nuget.config
-		README.md = README.md
+		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigMission.WrlDynoCheck.ReplayCsv", "BigMission.WrlDynoCheck.ReplayCsv\BigMission.WrlDynoCheck.ReplayCsv.csproj", "{BA505632-14EB-4F9A-AF65-E3A05E9E73DC}"
