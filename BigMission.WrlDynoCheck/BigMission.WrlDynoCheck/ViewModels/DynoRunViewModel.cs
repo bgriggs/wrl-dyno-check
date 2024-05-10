@@ -244,7 +244,6 @@ public partial class DynoRunViewModel : ObservableObject
     private int TraverseFlatSeriesPenaltyRanges(List<ObservablePoint> points, ChannelValue rpmFlatPt, ChannelValue peakRpmPt)
     {
         bool isLower = rpmFlatPt.Time < peakRpmPt.Time;
-       
 
         // Add the points between the flat and peak RPM values
         var seriesPoints = new List<ObservablePoint>();
