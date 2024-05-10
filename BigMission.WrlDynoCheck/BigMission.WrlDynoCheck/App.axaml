@@ -6,8 +6,24 @@
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
+	<Application.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceInclude Source="/Icons.axaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Application.Resources>
+	
     <Application.Styles>
 		<actipro:ModernTheme Includes="NativeDataGrid"/>
 		<dialogHostAvalonia:DialogHostStyles/>
+
+		<Style Selector="Button.icon">
+			<Setter Property="Height" Value="20"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="Padding" Value="3"/>
+		</Style>
     </Application.Styles>
+	
+	
 </Application>

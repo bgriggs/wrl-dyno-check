@@ -1,15 +1,16 @@
-﻿using BigMission.WrlDynoCheck.Models;
+﻿using Avalonia.Controls;
+using BigMission.WrlDynoCheck.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
-using System.Collections.Generic;
-using System;
-using LiveChartsCore.SkiaSharpView.Painting;
-using LiveChartsCore.SkiaSharpView;
-using SkiaSharp;
-using LiveChartsCore.Kernel.Sketches;
-using LiveChartsCore.Defaults;
 using LiveChartsCore;
+using LiveChartsCore.Defaults;
+using LiveChartsCore.Kernel.Sketches;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using LiveChartsCore.SkiaSharpView.Painting.Effects;
+using SkiaSharp;
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using MathNet.Numerics;
 
 namespace BigMission.WrlDynoCheck.ViewModels;
 
@@ -18,10 +19,9 @@ public partial class DynoRunViewModel : ObservableObject
     public string Name { get; set; } = "Run";
     public SortedDictionary<DateTime, ChannelValue> Rpm { get; } = [];
     public SortedDictionary<DateTime, ChannelValue> Power { get; } = [];
+    private const double FLAT_PERC = 0.03;
 
     private static readonly SKColor s_blue = new(25, 118, 210);
-    private static readonly SKColor s_red = new(229, 57, 53);
-    //private static readonly SKColor s_yellow = new(198, 167, 0);
 
     public List<ISeries> Series { get; } =
     [
@@ -35,7 +35,7 @@ public partial class DynoRunViewModel : ObservableObject
             LineSmoothness = 0,
             Fill = null,
             Stroke = new SolidColorPaint(s_blue) { StrokeThickness = 2 },
-            DataLabelsFormatter = (point) => point.Coordinate.PrimaryValue.ToString("F2"),
+            YToolTipLabelFormatter = (point) => $"{point.Coordinate.PrimaryValue:0.#} @ {point.Coordinate.SecondaryValue:0.####}",
         },
         //new LineSeries<ObservablePoint>
         //{
@@ -47,7 +47,7 @@ public partial class DynoRunViewModel : ObservableObject
         //},
     ];
 
-    public ICartesianAxis[] YAxes { get; set; } =
+    public ICartesianAxis[] YAxes { get; } =
     [
         new Axis
         {
@@ -69,7 +69,7 @@ public partial class DynoRunViewModel : ObservableObject
         //},
     ];
 
-    public Axis[] XAxes { get; set; } =
+    public Axis[] XAxes { get; } =
     [
         new Axis
         {
@@ -79,14 +79,20 @@ public partial class DynoRunViewModel : ObservableObject
         }
     ];
 
+    public List<RectangularSection> Sections { get; } = [];
+
     [ObservableProperty]
     private string penalty = string.Empty;
     [ObservableProperty]
     private string peakPower = string.Empty;
     [ObservableProperty]
-    private string lowerRange = string.Empty;
+    private string lowerPower = string.Empty;
     [ObservableProperty]
-    private string upperRange = string.Empty;
+    private string upperPower = string.Empty;
+    [ObservableProperty]
+    private string lowerFlatRpm = "N/A";
+    [ObservableProperty]
+    private string upperFlatRpm = "N/A";
 
 
     public DynoRunViewModel()
@@ -97,14 +103,10 @@ public partial class DynoRunViewModel : ObservableObject
 
     public void Process()
     {
-        // Interpolate the RPM data to match the power data timestamp
-        //var interpolation = Interpolate.Linear(Rpm.Values.Select(r => (double)r.Value), Rpm.Keys.Select(t => t.ToOADate()));
         var hpSeries = new List<ObservablePoint>();
-
         foreach (var hp in Power)
         {
             var rpm = Rpm.MinBy(r => Math.Abs((r.Key - hp.Key).TotalMilliseconds));
-            //var rpm = interpolation.Interpolate(hp.Key.ToOADate());
             hpSeries.Add(new(rpm.Value.Value, hp.Value.Value));
         }
 
@@ -122,25 +124,93 @@ public partial class DynoRunViewModel : ObservableObject
         var powerValues = Power.Values.ToList();
         var powerChannel = Power.First(p => p.Value.Value == peakHp).Value;
         var peakIdx = powerValues.IndexOf(powerChannel);
-
         var peakRpm = Rpm.MinBy(r => Math.Abs((r.Key - powerChannel.Time).TotalMilliseconds));
+
+        // Add a point to the series for the peak power value
         Series.Add(new LineSeries<ObservablePoint>
         {
             Name = "Peak Power",
             ScalesYAt = 0,
-            //GeometrySize = 0,
-            //GeometryFill = null,
-            //GeometryStroke = null,
-            //LineSmoothness = 0,
             Fill = null,
-            //Stroke = new SolidColorPaint(s_blue) { StrokeThickness = 2 },
-            DataLabelsFormatter = (point) => point.Coordinate.PrimaryValue.ToString("F2"),
+            Stroke = new SolidColorPaint(SKColors.Red) { StrokeThickness = 3 },
+            YToolTipLabelFormatter = (point) => $"{point.Coordinate.PrimaryValue:0.#} @ {point.Coordinate.SecondaryValue:0.####}",
             Values = [new(peakRpm.Value.Value, peakHp)]
         });
 
+        // Add line indicating the lower HP value without penalty
+        var lowerNoPenaltyRpm = Rpm.MinBy(r => Math.Abs(r.Value.Value - (peakRpm.Value.Value - 0.9999)));
+        var lowerNoPenaltyPower = Power.MinBy(r => Math.Abs((r.Key - lowerNoPenaltyRpm.Key).TotalMilliseconds));
+
+        Sections.Add(new RectangularSection
+        {
+            Yi = lowerNoPenaltyPower.Value.Value,
+            Yj = lowerNoPenaltyPower.Value.Value,
+            Stroke = new SolidColorPaint
+            {
+                Color = SKColors.Red,
+                StrokeThickness = 2,
+                PathEffect = new DashEffect([6, 6])
+            }
+        });
+
+        // Add rectangle indicating no penalty rpm range
+        Sections.Add(new RectangularSection
+        {
+            Xi = peakRpm.Value.Value - 0.9999,
+            Xj = peakRpm.Value.Value + 0.9999,
+            Fill = new SolidColorPaint { Color = SKColors.Green.WithAlpha(40) }
+        });
+
+        int totalPenalty = 0;
+
         // Traverse the power values to find the lower HP value in the sample set
+        var lowerHp = GetLowerPower(peakHp, peakIdx, powerValues);
+
+        // Determine the RPM range for the lower HP value
+        if (lowerHp != null)
+        {
+            var lowerRpm = Rpm.MinBy(r => Math.Abs((r.Key - lowerHp.Time).TotalMilliseconds));
+            LowerPower = $"{lowerHp.Value:0.##}";
+
+            double flatRange = Math.Abs(lowerRpm.Value.Value - peakRpm.Value.Value);
+            LowerFlatRpm = $"{flatRange:0.####}";
+
+            var lowerPenalty = TraverseFlatSeriesPenaltyRanges(hpSeries, lowerRpm.Value, peakRpm.Value);
+            totalPenalty += lowerPenalty;
+        }
+        else
+        {
+            LowerPower = "N/A";
+        }
+
+        // Traverse the power values to find the upper HP value in the sample set
+        var upperHp = GetUpperPower(peakHp, peakIdx, powerValues);
+        if (upperHp != null)
+        {
+            var upperRpm = Rpm.MinBy(r => Math.Abs((r.Key - upperHp.Time).TotalMilliseconds));
+            UpperPower = $"{upperHp.Value:0.##}";
+            
+            double flatRange = Math.Abs(upperRpm.Value.Value - peakRpm.Value.Value);
+            UpperFlatRpm = $"{flatRange:0.####}";
+
+            var upperPenalty = TraverseFlatSeriesPenaltyRanges(hpSeries, upperRpm.Value, peakRpm.Value);
+            totalPenalty += upperPenalty;
+        }
+        else
+        {
+            UpperPower = "N/A";
+        }
+
+        Penalty = $"{totalPenalty / -10.0:0.#}";
+    }
+
+    /// <summary>
+    /// Traverse the power values to find the lower 3% HP value in the sample set.
+    /// </summary>
+    private static ChannelValue? GetLowerPower(float peakHp, int peakIdx, List<ChannelValue> powerValues)
+    {
         ChannelValue? lowerHp = null;
-        var lowerHpCalc = peakHp - (peakHp * 0.03);
+        var lowerHpCalc = peakHp - (peakHp * FLAT_PERC);
         for (int i = peakIdx; i >= 0; i--)
         {
             if (powerValues[i].Value <= lowerHpCalc)
@@ -149,63 +219,16 @@ public partial class DynoRunViewModel : ObservableObject
                 break;
             }
         }
+        return lowerHp;
+    }
 
-        // Determine the RPM range for the lower HP value
-        if (lowerHp != null)
-        {
-            var lowerRpm = Rpm.MinBy(r => Math.Abs((r.Key - lowerHp.Time).TotalMilliseconds));
-            LowerRange = $"{lowerHp.Value:0.##} - {peakHp:0.##}";
-
-            // Determine the RPM range for the lower HP value
-            var perc3Rpm = peakRpm.Value.Value - lowerRpm.Value.Value;
-            if (perc3Rpm <= 0.9999)
-            {
-                // add green series
-                var greenSeries = new List<ObservablePoint>();
-                for (int i = peakIdx; i >= 0; i--)
-                {
-                    if (powerValues[i].Value > lowerHpCalc)
-                    {
-                        var rpm = Rpm.MinBy(r => Math.Abs((r.Key - powerValues[i].Time).TotalMilliseconds));
-                        greenSeries.Add(new(rpm.Value.Value, powerValues[i].Value));
-                        break;
-                    }
-                }
-
-                Series.Insert(0, new LineSeries<ObservablePoint>
-                {
-                    Name = "No Penalty",
-                    ScalesYAt = 0,
-                    GeometrySize = 0,
-                    GeometryFill = null,
-                    GeometryStroke = null,
-                    LineSmoothness = 0,
-                    Fill = null,
-                    Stroke = new SolidColorPaint(SKColors.LightGreen) { StrokeThickness = 4 },
-                    DataLabelsFormatter = (point) => point.Coordinate.PrimaryValue.ToString("F2"),
-                    Values = greenSeries
-                });
-            }
-            else if (perc3Rpm <= 1249.9)
-            {
-                // add green series
-                // add yellow series
-            }
-            else if (perc3Rpm > 1249.9)
-            {
-                // add green series
-                // add yellow series
-                // add red series
-            }
-        }
-        else
-        {
-            LowerRange = "N/A";
-        }
-
-        // Traverse the power values to find the upper HP value in the sample set
+    /// <summary>
+    /// Traverse the power values to find the upper 3% HP value in the sample set.
+    /// </summary>
+    private static ChannelValue? GetUpperPower(float peakHp, int peakIdx, List<ChannelValue> powerValues)
+    {
         ChannelValue? upperHp = null;
-        var upperHpCalc = peakHp + (peakHp * 0.03);
+        var upperHpCalc = peakHp + (peakHp * FLAT_PERC);
         for (int i = peakIdx; i < powerValues.Count; i++)
         {
             if (powerValues[i].Value >= upperHpCalc)
@@ -215,15 +238,120 @@ public partial class DynoRunViewModel : ObservableObject
             }
         }
 
-        if (upperHp != null)
+        return upperHp;
+    }
+
+    private int TraverseFlatSeriesPenaltyRanges(List<ObservablePoint> points, ChannelValue rpmFlatPt, ChannelValue peakRpmPt)
+    {
+        bool isLower = rpmFlatPt.Time < peakRpmPt.Time;
+       
+
+        // Add the points between the flat and peak RPM values
+        var seriesPoints = new List<ObservablePoint>();
+        foreach (var pt in points)
         {
-            var upperRpm = Rpm.MinBy(r => Math.Abs((r.Key - upperHp.Time).TotalMilliseconds));
-            UpperRange = $"{peakHp:0.##} - {upperHp.Value:0.##}";
+            if (isLower && pt.X >= rpmFlatPt.Value && pt.X <= peakRpmPt.Value)
+            {
+                seriesPoints.Add(pt);
+            }
+            // Upper end of curve
+            else if (!isLower && pt.X <= rpmFlatPt.Value && pt.X >= peakRpmPt.Value)
+            {
+                seriesPoints.Add(pt);
+            }
         }
-        else
+
+        var pointsPeakAnchor = new List<ObservablePoint>(seriesPoints);
+        if (isLower)
         {
-            UpperRange = "N/A";
+            pointsPeakAnchor.Reverse();
         }
+
+        int penalty = 0;
+
+        // Range 1: 0-0.9999 rpm
+        var subRange = ExtractPoints(pointsPeakAnchor, 0.9999);
+        AddSeries(SKColors.LightGreen, "Flat No Penalty (0-999.9)", subRange);
+
+        // Range 2: 1.000-1.2499
+        subRange = ExtractPoints(pointsPeakAnchor, 1.2499 - 1.000);
+        AddSeries(SKColors.Yellow, "Flat -0.1 (1000-1249)", subRange);
+        if (subRange.Count != 0)
+        {
+            penalty++;
+        }
+
+        // Range 3: 1.2500-1.4999
+        subRange = ExtractPoints(pointsPeakAnchor, 1.4999 - 1.2500);
+        AddSeries(SKColors.Orange, "Flat -0.1 (1250-1499)", subRange);
+        if (subRange.Count != 0)
+        {
+            penalty++;
+        }
+
+        // Range 4: 1.5000+
+        subRange = ExtractPoints(pointsPeakAnchor, 1000);
+        AddSeries(SKColors.Red, "Flat -0.1 per 500 (>1500)", subRange);
+        if (subRange.Count != 0)
+        {
+            if (subRange.Count == 1)
+            {
+                penalty++;
+            }
+            else
+            {
+                double range = Math.Abs(subRange.First().X!.Value - subRange.Last().X!.Value);
+
+                // Count each 500 rpm range as a penalty
+                penalty += (int)Math.Ceiling(range / 0.5);
+            }
+        }
+
+        return penalty;
+    }
+
+    private static List<ObservablePoint> ExtractPoints(List<ObservablePoint> pointsPeakAnchor, double rpmDuration)
+    {
+        if (pointsPeakAnchor.Count == 0)
+            return [];
+
+        var subRange = new List<ObservablePoint>();
+        var startRpmPoint = pointsPeakAnchor[0].X;
+        foreach (var pt in pointsPeakAnchor.ToArray())
+        {
+            var rpmDiff = Math.Abs(pt.X!.Value - startRpmPoint!.Value);
+            if (rpmDiff <= rpmDuration)
+            {
+                subRange.Add(pt);
+                pointsPeakAnchor.Remove(pt);
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        return subRange;
+    }
+
+    private void AddSeries(SKColor color, string name, List<ObservablePoint> points)
+    {
+        if (points.Count == 0)
+            return;
+
+        Series.Insert(0, new LineSeries<ObservablePoint>
+        {
+            Name = name,
+            ScalesYAt = 0,
+            GeometrySize = 0,
+            GeometryFill = null,
+            GeometryStroke = null,
+            LineSmoothness = 0,
+            Fill = null,
+            Stroke = new SolidColorPaint(color) { StrokeThickness = 8 },
+            YToolTipLabelFormatter = (point) => $"{point.Coordinate.PrimaryValue:0.#} @ {point.Coordinate.SecondaryValue:0.####}",
+            Values = points
+        });
     }
 
     /// <summary>
@@ -268,5 +396,23 @@ public partial class DynoRunViewModel : ObservableObject
         else if (interval < 1500)
             minStep = 1500;
         return minStep;
+    }
+
+    /// <summary>
+    /// Close this run.
+    /// </summary>
+    public void RemoveRun(object parent)
+    {
+        var c = (Control)parent;
+        if (c.DataContext is MainViewModel mvm)
+        {
+            // For now, do not allow the last run due to the chart crashing
+            if (mvm.Runs.Count > 1)
+            {
+                mvm.Runs.Remove(this);
+                mvm.SelectedRun = mvm.Runs.First();
+            }
+            
+        }
     }
 }

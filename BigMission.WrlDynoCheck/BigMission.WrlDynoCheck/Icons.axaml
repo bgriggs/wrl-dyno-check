@@ -1,0 +1,45 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<DrawingImage x:Key="closeicon">
+		<DrawingImage.Drawing>
+			<DrawingGroup ClipGeometry="M0,0 V48 H48 V0 H0 Z">
+				<DrawingGroup.Transform>
+					<TranslateTransform X="0" Y="6.4000000953674316" />
+				</DrawingGroup.Transform>
+				<DrawingGroup Transform="0.0528168999008943,0,0,-0.0528168999008943,-3.04225335369932,47.6619717978197">
+					<GeometryDrawing Brush="#FF000000" Geometry="F1 M48,48z M0,0z M966.4,761.6L825.6,902.4 512,582.4 198.4,902.4 57.5999999999999,761.6 377.6,448 57.5999999999999,134.4 198.4,-6.39999999999992 512,313.6 825.6,-6.39999999999992 966.4,134.4 646.4,448z">
+						<GeometryDrawing.Pen>
+							<Pen Brush="#FF000000" Thickness="1" LineCap="Flat" LineJoin="Miter" />
+						</GeometryDrawing.Pen>
+					</GeometryDrawing>
+				</DrawingGroup>
+			</DrawingGroup>
+		</DrawingImage.Drawing>
+	</DrawingImage>
+
+	<DrawingImage x:Key="folderOpenLineDrawing">
+		<DrawingImage.Drawing>
+			<DrawingGroup ClipGeometry="M0,0 V48 H48 V0 H0 Z">
+				<DrawingGroup Transform="0.0468292682926829,0,0,-0.0468292682926829,-4.68292682926829,52.0975609756098">
+					<GeometryDrawing Brush="#FF000000" Geometry="F1 M48,48z M0,0z M150,150A50,50,0,0,0,100,200L100,1000A50,50,0,0,0,150,1050L520.7,1050 620.7,950 1000,950A50,50,0,0,0,1050,900L1050,750 950,750 950,850 579.3,850 479.3,950 200,950 200,350.1 275,650 1125,650 1009.5,187.85A50,50,0,0,0,961,150L150,150z M996.9,550L353.1,550 278.1,250 921.9,250 996.9,550z">
+						<GeometryDrawing.Pen>
+							<Pen Brush="#FF000000" Thickness="1" LineCap="Flat" LineJoin="Miter" />
+						</GeometryDrawing.Pen>
+					</GeometryDrawing>
+				</DrawingGroup>
+			</DrawingGroup>
+		</DrawingImage.Drawing>
+	</DrawingImage>
+	
+	<Design.PreviewWith>
+		<StackPanel>
+			<Border Width="25">
+				<Image Source="{StaticResource closeicon}"/>
+			</Border>
+			<Border Width="25">
+				<Image Source="{StaticResource folderOpenLineDrawing}"/>
+			</Border>
+		</StackPanel>
+	</Design.PreviewWith>
+</ResourceDictionary>

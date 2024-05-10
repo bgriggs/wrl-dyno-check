@@ -1,4 +1,6 @@
-﻿using Avalonia.Threading;
+﻿using Avalonia.Controls;
+using Avalonia.Platform.Storage;
+using Avalonia.Threading;
 using BigMission.WrlDynoCheck.Models;
 using BigMission.WrlDynoCheck.Services;
 using BigMission.WrlDynoCheck.Utilities;
@@ -8,8 +10,13 @@ using LogViewer.Core.ViewModels;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Enums;
+using MsBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
 
 namespace BigMission.WrlDynoCheck.ViewModels;
 
@@ -117,6 +124,42 @@ public partial class MainViewModel : CommunityToolkit.Mvvm.ComponentModel.Observ
                 Logger.LogWarning("No run fount to complete");
             }
         });
+    }
+
+    public async Task OpenFileAsync(object source)
+    {
+        var topLevel = TopLevel.GetTopLevel((Control)source);
+        if (topLevel != null)
+        {
+            var dir = Directory.GetCurrentDirectory();
+            var defaultPath = await topLevel.StorageProvider.TryGetFolderFromPathAsync(dir);
+            var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            {
+                Title = "Open File",
+                AllowMultiple = false,
+                SuggestedStartLocation = defaultPath,
+            });
+
+            if (files.Count > 0)
+            {
+                try
+                {
+                    await LoadCsv(files[0].Path.LocalPath, files[0].Name);
+                }
+                catch (Exception ex)
+                {
+                    var box = MessageBoxManager.GetMessageBoxCustom(new MessageBoxCustomParams
+                    {
+                        ButtonDefinitions = [new ButtonDefinition { Name = "OK", IsDefault = true }],
+                        ContentTitle = "Load Error",
+                        ContentMessage = "Failed to load selected file: " + ex.Message,
+                        Icon = Icon.Error,
+                        MaxWidth = 500,
+                    });
+                    await box.ShowAsync();
+                }
+            }
+        }
     }
 
     public async Task LoadCsv(string file, string runName)
