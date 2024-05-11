@@ -49,7 +49,7 @@ try {
         /p:ApplicationVersion=$version /p:Configuration=Release `
         /p:PublishDir=$publishDir /p:PublishUrl=$publishDir `
         $msBuildVerbosityArg
-
+    
     # Measure publish size.
     $publishSize = (Get-ChildItem -Path "$publishDir/Application Files" -Recurse |
         Measure-Object -Property Length -Sum).Sum / 1Mb
