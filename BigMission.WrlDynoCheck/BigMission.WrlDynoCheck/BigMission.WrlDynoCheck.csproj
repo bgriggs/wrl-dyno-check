@@ -18,7 +18,7 @@
 		<PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.10" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 		<PackageReference Include="CommunityToolkit.Labs.Extensions.DependencyInjection" Version="0.1.240213-build.1640" />
-		<PackageReference Include="BigMission.Avalonia.LogViewer" Version="1.0.0-CI-20240330-022821" />
+		<PackageReference Include="BigMission.Avalonia.LogViewer" Version="1.0.2" />
 		<PackageReference Include="DialogHost.Avalonia" Version="0.7.7" />
 		<PackageReference Include="JetdriveSharp" Version="1.0.3" />
 		<PackageReference Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.0-rc2" />
