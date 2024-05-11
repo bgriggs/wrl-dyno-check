@@ -22,7 +22,6 @@
 		<PackageReference Include="DialogHost.Avalonia" Version="0.7.7" />
 		<PackageReference Include="JetdriveSharp" Version="1.0.3" />
 		<PackageReference Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.0-rc2" />
-		<PackageReference Include="MathNet.Numerics" Version="5.0.0" />
 		<PackageReference Include="MessageBox.Avalonia" Version="3.1.5.1" />
 		<PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="8.0.4">
 			<PrivateAssets>all</PrivateAssets>

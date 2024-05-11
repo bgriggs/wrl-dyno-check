@@ -1,3 +1,5 @@
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/bgriggs/wrl-dyno-check/build.yml)
+
 # WRL Dyno Check
 This application processes runs from Dynojet dynamometers and checks for compliance with the World Racing League (WRL) flat curve ruleset.
 
