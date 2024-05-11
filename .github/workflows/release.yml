@@ -20,4 +20,4 @@ jobs:
 
       - name: Run release script
         shell: pwsh
-        run: ./release.ps1
+        run: ./BigMission.WrlDynoCheck/release.ps1
