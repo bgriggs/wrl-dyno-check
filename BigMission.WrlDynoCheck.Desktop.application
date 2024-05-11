@@ -8,7 +8,7 @@
         <beforeApplicationStartup />
       </update>
     </subscription>
-    <deploymentProvider codebase="https://github.com/bgriggs/wrl-dyno-check/BigMission.WrlDynoCheck.Desktop.application" />
+    <deploymentProvider codebase="https://bgriggs.github.io/wrl-dyno-check/BigMission.WrlDynoCheck.Desktop.application" />
   </deployment>
   <compatibleFrameworks xmlns="urn:schemas-microsoft-com:clickonce.v2">
     <framework targetVersion="4.5" profile="Full" supportedRuntime="4.0.30319" />
@@ -21,7 +21,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>AbNZw65h5FxdVzf5XLztN2Z4MBaB17qft8TR4gnSC0Q=</dsig:DigestValue>
+        <dsig:DigestValue>g+8tmLRkFQGxkyVtYQNEdOSXW7lcjzOSpSrKNjf11kY=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

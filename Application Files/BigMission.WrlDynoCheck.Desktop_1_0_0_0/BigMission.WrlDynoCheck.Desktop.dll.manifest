@@ -321,7 +321,7 @@
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>KVpZq7bm1vjC8z5CkyAvszFezUPQs2gAUX8KUFyf3Uo=</dsig:DigestValue>
+      <dsig:DigestValue>rLGiFc/twBPg9s5Fb31dMt2bCDfAHwq3GLXApJbmVCE=</dsig:DigestValue>
     </hash>
   </file>
   <file name="BigMission.WrlDynoCheck.Desktop.exe" size="142848">
@@ -330,7 +330,7 @@
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>zwBhgqteSBkA9nbXKBSSS+Exiw+EtXPl0C6kCeFSPhE=</dsig:DigestValue>
+      <dsig:DigestValue>FCR8rjSyzT4CISPy1Q98Wq2XBZULrO211pi4MywxIZA=</dsig:DigestValue>
     </hash>
   </file>
   <file name="BigMission.WrlDynoCheck.Desktop.runtimeconfig.json" size="448">
@@ -348,7 +348,7 @@
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>xKBFj7KB++MovvNcxDyg6WDri3UXoHjD0XCIGo8GuR4=</dsig:DigestValue>
+      <dsig:DigestValue>VY8JTPS2blklnJAiYVGoICs/lA2QzPF9wzkY8e5HqII=</dsig:DigestValue>
     </hash>
   </file>
   <file name="clretwrc.dll" size="311048">
