@@ -1,0 +1,32 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:BigMission.WrlDynoCheck.ViewModels"
+			 xmlns:dialog="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="250"
+             x:Class="BigMission.WrlDynoCheck.Views.About">
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
+         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+		<vm:AboutViewModel/>
+	</Design.DataContext>
+	<Grid RowDefinitions="*,Auto" >
+		<StackPanel Orientation="Vertical" Margin="16">
+
+			<TextBlock Text="WRL Dyno Flat Curve Check" Classes="theme-text-heading size-xl" Margin="3"/>
+			<TextBlock Text="Checks dyno runs for compliance with WRL flat curve rule." Classes="theme-text-heading size-sm" Margin="3"/>
+			<TextBlock Text="Author: Big Mission Motorsports, Brian Griggs" Margin="3"/>
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="Project Location:" Margin="3,3,0,3"/>
+				<Button x:Name="url" Classes="link" Content="https://github.com/bgriggs/wrl-dyno-check" Margin="3" 
+						Command="{Binding OpenUrl}" CommandParameter="{Binding #url.Content}"/>
+			</StackPanel>
+
+
+		</StackPanel>
+
+		<Button Classes="close" Margin="8" Grid.Row="1" HorizontalAlignment="Right"
+				Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialog:DialogHost}, Path=CloseDialogCommand}"/>
+	</Grid>
+</UserControl>

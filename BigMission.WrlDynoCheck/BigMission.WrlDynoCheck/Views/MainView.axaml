@@ -6,6 +6,7 @@
 			 xmlns:lc="clr-namespace:BigMission.Avalonia.LogViewer;assembly=BigMission.Avalonia.LogViewer"
 			 xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
 			 xmlns:actipro="http://schemas.actiprosoftware.com/avaloniaui"
+			 xmlns:dialog="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BigMission.WrlDynoCheck.Views.MainView"
              x:DataType="vm:MainViewModel">
@@ -14,68 +15,77 @@
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
 		<!--<vm:MainViewModel />-->
 	</Design.DataContext>
-	<Grid RowDefinitions="Auto,*,Auto,Auto" ColumnDefinitions="Auto,*">
 
-		<Border Grid.ColumnSpan="2" Margin="12,3,3,3"
-				Background="{actipro:ThemeResource Container1BackgroundBrush}"
-				BorderBrush="{actipro:ThemeResource Container1BorderBrush}"
-				BorderThickness="1" CornerRadius="10" Padding="3">
-			<Grid ColumnDefinitions="Auto,*,Auto">
-				<Button Margin="3" Classes="icon" ToolTip.Tip="Open Run" 
-						Command="{Binding OpenFileAsync}" CommandParameter="{Binding $parent}">
-					<Image Source="{StaticResource folderOpenLineDrawing}"/>
-				</Button>
+	<dialog:DialogHost Identifier="MainDialogHost" Background="{actipro:ThemeResource Container2BackgroundBrush}"
+					   DialogMargin="3" dialog:DialogHostStyle.CornerRadius="4" DisableOpeningAnimation="True">
+		<Grid RowDefinitions="Auto,*,Auto,Auto" ColumnDefinitions="Auto,*">
 
-				<StackPanel Grid.Column="1" Orientation="Horizontal" DataContext="{Binding SelectedRun}" HorizontalAlignment="Center">
-					<TextBlock Text="{Binding Penalty, StringFormat='Flat Curve Penalty: {0}'}" Margin="3"/>
-					<TextBlock Text="{Binding PeakPower, StringFormat='Peak Power: {0}'}" Margin="3"/>
-					<TextBlock Text="{Binding LowerPower, StringFormat='Lower Power: {0}'}" Margin="3"/>
-					<TextBlock Text="{Binding LowerFlatRpm, StringFormat='Lower Flat RPM: {0}'}" Margin="3"/>
-					<TextBlock Text="{Binding UpperPower, StringFormat='Upper Power: {0}'}" Margin="3"/>
-					<TextBlock Text="{Binding UpperFlatRpm, StringFormat='Upper Flat RPM: {0}'}" Margin="3"/>
+			<Border Grid.ColumnSpan="2" Margin="12,3,3,3"
+					Background="{actipro:ThemeResource Container1BackgroundBrush}"
+					BorderBrush="{actipro:ThemeResource Container1BorderBrush}"
+					BorderThickness="1" CornerRadius="10" Padding="3">
+				<Grid ColumnDefinitions="Auto,*,Auto">
+					<StackPanel Orientation="Horizontal">
+						<Button Margin="3" Classes="icon" ToolTip.Tip="Open Run"
+								Command="{Binding OpenFileAsync}" CommandParameter="{Binding $parent}">
+							<Image Source="{StaticResource folderOpenLineDrawing}"/>
+						</Button>
+						<Button Margin="3" Classes="icon" ToolTip.Tip="About"
+								Command="{Binding ShowAboutAsync}">
+							<Image Source="{StaticResource informationOutlineDrawing}"/>
+						</Button>
+					</StackPanel>
+					<StackPanel Grid.Column="1" Orientation="Horizontal" DataContext="{Binding SelectedRun}" HorizontalAlignment="Center">
+						<TextBlock Text="{Binding Penalty, StringFormat='Flat Curve Penalty: {0}'}" Margin="3"/>
+						<TextBlock Text="{Binding PeakPower, StringFormat='Peak Power: {0}'}" Margin="3"/>
+						<TextBlock Text="{Binding LowerPower, StringFormat='Lower Power: {0}'}" Margin="3"/>
+						<TextBlock Text="{Binding LowerFlatRpm, StringFormat='Lower Flat RPM: {0}'}" Margin="3"/>
+						<TextBlock Text="{Binding UpperPower, StringFormat='Upper Power: {0}'}" Margin="3"/>
+						<TextBlock Text="{Binding UpperFlatRpm, StringFormat='Upper Flat RPM: {0}'}" Margin="3"/>
+					</StackPanel>
+				</Grid>
+			</Border>
+
+			<!--Run Selection-->
+			<Border Grid.Row="1" Grid.Column="0" Margin="12,3,3,3"
+					Background="{actipro:ThemeResource Container1BackgroundBrush}"
+					BorderBrush="{actipro:ThemeResource Container1BorderBrush}"
+					BorderThickness="1" CornerRadius="10" Padding="3">
+				<ListBox x:Name="runs" Width="220" Margin="3"
+						 ItemsSource="{Binding Runs}" SelectedItem="{Binding SelectedRun}">
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<StackPanel Orientation="Horizontal">
+								<TextBlock Text="{Binding Name}" Margin="3" VerticalAlignment="Center"/>
+								<Button Margin="3,0,0,0" Classes="icon" ToolTip.Tip="Remove Run"
+										Command="{Binding RemoveRun}" CommandParameter="{Binding #runs}">
+									<Image Source="{StaticResource closeicon}"/>
+								</Button>
+							</StackPanel>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</Border>
+
+			<!--Chart-->
+			<Border Grid.Row="1" Grid.Column="1" Margin="3,3,12,3" IsVisible="{Binding HasRun}"
+					Background="{actipro:ThemeResource Container1BackgroundBrush}"
+					BorderBrush="{actipro:ThemeResource Container1BorderBrush}"
+					BorderThickness="1" CornerRadius="10" Padding="3">
+				<lvc:CartesianChart MinWidth="600" MinHeight="300" LegendPosition="Right" DataContext="{Binding SelectedRun}"
+									Series="{Binding Series}" YAxes="{Binding YAxes}" XAxes="{Binding XAxes}" Sections="{Binding Sections}"/>
+			</Border>
+
+			<!--Logs-->
+			<Border Grid.Row="3" Grid.ColumnSpan="2" Margin="12,3,12,3"
+					Background="{actipro:ThemeResource Container1BackgroundBrush}"
+					BorderBrush="{actipro:ThemeResource Container1BorderBrush}"
+					BorderThickness="1" CornerRadius="10" Padding="2">
+				<StackPanel>
+					<TextBlock Text="Logs" Classes="theme-text-heading size-sm" Margin="12,12,3,3"/>
+					<lc:LogViewerControl DataContext="{Binding LogViewer}" Height="220"/>
 				</StackPanel>
-			</Grid>
-		</Border>
-		
-		<!--Run Selection-->
-		<Border Grid.Row="1" Grid.Column="0" Margin="12,3,3,3"
-				Background="{actipro:ThemeResource Container1BackgroundBrush}"
-				BorderBrush="{actipro:ThemeResource Container1BorderBrush}"
-				BorderThickness="1" CornerRadius="10" Padding="3">
-			<ListBox x:Name="runs" Width="220" Margin="3"
-					 ItemsSource="{Binding Runs}" SelectedItem="{Binding SelectedRun}">
-				<ListBox.ItemTemplate>
-					<DataTemplate>
-						<StackPanel Orientation="Horizontal">
-							<TextBlock Text="{Binding Name}" Margin="3" VerticalAlignment="Center"/>
-							<Button Margin="3,0,0,0" Classes="icon" ToolTip.Tip="Remove Run" 
-									Command="{Binding RemoveRun}" CommandParameter="{Binding #runs}">
-								<Image Source="{StaticResource closeicon}"/>
-							</Button>
-						</StackPanel>
-					</DataTemplate>
-				</ListBox.ItemTemplate>
-			</ListBox>
-		</Border>
-
-		<!--Chart-->
-		<Border Grid.Row="1" Grid.Column="1" Margin="3,3,12,3" IsVisible="{Binding HasRun}"
-				Background="{actipro:ThemeResource Container1BackgroundBrush}"
-				BorderBrush="{actipro:ThemeResource Container1BorderBrush}"
-				BorderThickness="1" CornerRadius="10" Padding="3">
-			<lvc:CartesianChart MinWidth="600" MinHeight="300" LegendPosition="Right" DataContext="{Binding SelectedRun}"
-								Series="{Binding Series}" YAxes="{Binding YAxes}" XAxes="{Binding XAxes}" Sections="{Binding Sections}"/>
-		</Border>
-
-		<!--Logs-->
-		<Border Grid.Row="3" Grid.ColumnSpan="2" Margin="12,3,12,3"
-				Background="{actipro:ThemeResource Container1BackgroundBrush}"
-				BorderBrush="{actipro:ThemeResource Container1BorderBrush}"
-				BorderThickness="1" CornerRadius="10" Padding="2">
-			<StackPanel>
-				<TextBlock Text="Logs" Classes="theme-text-heading size-sm" Margin="12,12,3,3"/>
-				<lc:LogViewerControl DataContext="{Binding LogViewer}" Height="220"/>
-			</StackPanel>
-		</Border>
-	</Grid>
+			</Border>
+		</Grid>
+	</dialog:DialogHost>
 </UserControl>

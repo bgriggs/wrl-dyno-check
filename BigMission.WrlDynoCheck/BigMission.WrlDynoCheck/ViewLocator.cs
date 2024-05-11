@@ -24,6 +24,7 @@ public class ViewLocator : IDataTemplate
     {
         this.serviceProvider = serviceProvider;
         RegisterViewFactory<MainViewModel, MainView>();
+        RegisterViewFactory<AboutViewModel, About>();
     }
 
     public Control Build(object? data)

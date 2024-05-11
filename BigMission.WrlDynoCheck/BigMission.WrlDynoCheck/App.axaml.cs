@@ -82,8 +82,10 @@ public partial class App : Application
 
     [Singleton(typeof(MainViewModel))]
     [Singleton(typeof(LogViewerControlViewModel))]
+    [Singleton(typeof(AboutViewModel))]
     internal static partial void ConfigureViewModels(IServiceCollection services);
 
     [Singleton(typeof(MainView))]
+    [Singleton(typeof(About))]
     internal static partial void ConfigureViews(IServiceCollection services);
 }

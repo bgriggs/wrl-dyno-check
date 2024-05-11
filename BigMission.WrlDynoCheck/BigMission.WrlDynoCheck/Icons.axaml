@@ -31,7 +31,21 @@
 			</DrawingGroup>
 		</DrawingImage.Drawing>
 	</DrawingImage>
-	
+
+	<DrawingImage x:Key="informationOutlineDrawing">
+		<DrawingImage.Drawing>
+			<DrawingGroup ClipGeometry="M0,0 V48 H48 V0 H0 Z">
+				<DrawingGroup Transform="2.4,0,0,2.4,-4.8,-4.8">
+					<GeometryDrawing Brush="#FF000000" Geometry="F1 M48,48z M0,0z M11,9L13,9 13,7 11,7 M12,20C7.59,20 4,16.41 4,12 4,7.59 7.59,4 12,4 16.41,4 20,7.59 20,12 20,16.41 16.41,20 12,20 M12,2A10,10,0,0,0,2,12A10,10,0,0,0,12,22A10,10,0,0,0,22,12A10,10,0,0,0,12,2 M11,17L13,17 13,11 11,11 11,17z">
+						<GeometryDrawing.Pen>
+							<Pen Brush="#FF000000" Thickness="1" LineCap="Flat" LineJoin="Miter" />
+						</GeometryDrawing.Pen>
+					</GeometryDrawing>
+				</DrawingGroup>
+			</DrawingGroup>
+		</DrawingImage.Drawing>
+	</DrawingImage>
+
 	<Design.PreviewWith>
 		<StackPanel>
 			<Border Width="25">
@@ -39,6 +53,9 @@
 			</Border>
 			<Border Width="25">
 				<Image Source="{StaticResource folderOpenLineDrawing}"/>
+			</Border>
+			<Border Width="25">
+				<Image Source="{StaticResource informationOutlineDrawing}"/>
 			</Border>
 		</StackPanel>
 	</Design.PreviewWith>

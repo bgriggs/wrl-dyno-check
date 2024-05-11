@@ -5,6 +5,11 @@ This application processes runs from Dynojet dynamometers and checks for complia
 
 ![alt text](https://github.com/bgriggs/wrl-dyno-ckeck/blob/9834a12132982ebbc2bfeba9f3075a243a788cc2/BigMission.WrlDynoCheck/BigMission.WrlDynoCheck/Assets/screenshot1.png?raw=true)
 
+## Installation
+Download the latest release install from https://bgriggs.github.io/wrl-dyno-check/BigMission.WrlDynoCheck.Desktop.application
+
+Accept the firewall settings to allow the application to communicate with the Dynojet WinPep 8 software.
+
 ## Usage
 The application allow for two modes of operation. 
 1. Live connection to Dynojet to process runs as they are completed during tuning.

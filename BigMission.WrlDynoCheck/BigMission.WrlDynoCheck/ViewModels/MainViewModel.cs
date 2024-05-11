@@ -6,17 +6,18 @@ using BigMission.WrlDynoCheck.Services;
 using BigMission.WrlDynoCheck.Utilities;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using DialogHostAvalonia;
 using LogViewer.Core.ViewModels;
 using Microsoft.Extensions.Logging;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Enums;
+using MsBox.Avalonia.Models;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using MsBox.Avalonia;
-using MsBox.Avalonia.Enums;
-using MsBox.Avalonia.Models;
-using MsBox.Avalonia.Dto;
 
 namespace BigMission.WrlDynoCheck.ViewModels;
 
@@ -196,5 +197,11 @@ public partial class MainViewModel : CommunityToolkit.Mvvm.ComponentModel.Observ
 
         Runs.Add(run);
         SelectedRun = run;
+    }
+
+    public async Task ShowAboutAsync()
+    {
+        var vm = new AboutViewModel();
+        await DialogHost.Show(vm, "MainDialogHost");
     }
 }
