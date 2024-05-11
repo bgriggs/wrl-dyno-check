@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
-  <asmv1:assemblyIdentity name="BigMission.WrlDynoCheck.Desktop.exe" version="1.0.1.0" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
+  <asmv1:assemblyIdentity name="BigMission.WrlDynoCheck.Desktop.exe" version="1.0.2.0" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
   <description xmlns="urn:schemas-microsoft-com:asm.v1">Checks dyno runs for compliance with WRL flat curve rule.</description>
   <application />
   <entryPoint>
@@ -321,7 +321,7 @@
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>gMeXtGUvilNX63gEh3OD7wkTzWpdzHBCFDAzKVM+5vw=</dsig:DigestValue>
+      <dsig:DigestValue>Lc4xMrQFq0gpwkvVMmYIBCp0DglAA4UVMnB2aWu3Zys=</dsig:DigestValue>
     </hash>
   </file>
   <file name="BigMission.WrlDynoCheck.Desktop.exe" size="142848">
@@ -330,7 +330,7 @@
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>RUaAsDekKCUptutOlpTYruSyk0vaoH0orZp0VgTM330=</dsig:DigestValue>
+      <dsig:DigestValue>Hj9dlNR/GwNM6dAHHoH6lWKNhOV3Z30wEVsX7n39cFw=</dsig:DigestValue>
     </hash>
   </file>
   <file name="BigMission.WrlDynoCheck.Desktop.runtimeconfig.json" size="448">
@@ -348,7 +348,7 @@
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>WoCi++3QctWyxeEBXAcDQmlpHXEswSVntxehByB2reE=</dsig:DigestValue>
+      <dsig:DigestValue>1SgsE+f/KfeG3FocxKtlba0G0ZfKdnRho9PzQZs03JE=</dsig:DigestValue>
     </hash>
   </file>
   <file name="clretwrc.dll" size="311048">
@@ -493,6 +493,33 @@
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
       <dsig:DigestValue>/I7y0YsMSk5+O1kCuUCoTbe1mFfckkRQlmCJASU6oMQ=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="DemoRuns\RunFile_40.csv" size="74331">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>ZNEu5Apx0Mo4bSJq+pLi5M76VO3pAbJ0kEEXv5E7HGo=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="DemoRuns\RunFile_86.csv" size="65039">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>JxXJOB5BymALX6NfsjHJu2YXkmwG0EcaIPF8fkLtYrI=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="DemoRuns\RunFile_96.csv" size="67830">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>V1nGPNSHMe5BvOWPFmU/MgfCLlZepbNFTEiy2K7Ai44=</dsig:DigestValue>
     </hash>
   </file>
   <file name="DialogHost.Avalonia.dll" size="67584">
