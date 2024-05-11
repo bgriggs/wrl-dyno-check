@@ -6,7 +6,7 @@ param (
 )
 
 $appName = "BigMission.WrlDynoCheck.Desktop"
-$projDir = "BigMission.WrlDynoCheck.Desktop"
+$projDir = "BigMission.WrlDynoCheck\BigMission.WrlDynoCheck.Desktop"
 
 Set-StrictMode -version 2.0
 $ErrorActionPreference = "Stop"
