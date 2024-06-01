@@ -1,7 +1,7 @@
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/bgriggs/wrl-dyno-check/build.yml)
 
 # Unofficial WRL Dyno Check
-This application processes runs from Dynojet dynamometers and checks for compliance with the World Racing League (WRL) flat curve ruleset.
+This application processes runs from Dynojet dynamometers and checks for compliance with the 2024 World Racing League (WRL) flat curve ruleset.
 This application is not official. Results should be verified with WRL. 
 
 ![alt text](https://github.com/bgriggs/wrl-dyno-ckeck/blob/9834a12132982ebbc2bfeba9f3075a243a788cc2/BigMission.WrlDynoCheck/BigMission.WrlDynoCheck/Assets/screenshot1.png?raw=true)
