@@ -35,6 +35,7 @@ Ensure the WinPep 8 software is configured to allow JETDRIVE. This can be done b
 To load a CSV file, select the "Open CSV File" folder button in the upper left of the application. Select the CSV file that was exported from the Dynojet WinPep 8 software. The application will process the runs in the CSV file.
 
 When exporting from WinPep 8, right-click the run and select Export. Select the Time Export tab and ensure 50ms is selected. This will export the run data in a format that can be processed by the application.
+
 ![alt text](https://github.com/bgriggs/wrl-dyno-ckeck/blob/main/BigMission.WrlDynoCheck/BigMission.WrlDynoCheck/Assets/screenshot-dynojet-export-options.png?raw=true)
 
 # Disclaimer of Liability
