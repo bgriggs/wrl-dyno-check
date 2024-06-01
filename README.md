@@ -1,7 +1,8 @@
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/bgriggs/wrl-dyno-check/build.yml)
 
-# WRL Dyno Check
+# Unofficial WRL Dyno Check
 This application processes runs from Dynojet dynamometers and checks for compliance with the World Racing League (WRL) flat curve ruleset.
+This application is not official. Results should be verified with WRL. 
 
 ![alt text](https://github.com/bgriggs/wrl-dyno-ckeck/blob/9834a12132982ebbc2bfeba9f3075a243a788cc2/BigMission.WrlDynoCheck/BigMission.WrlDynoCheck/Assets/screenshot1.png?raw=true)
 
@@ -35,3 +36,9 @@ To load a CSV file, select the "Open CSV File" folder button in the upper left o
 
 When exporting from WinPep 8, right-click the run and select Export. Select the Time Export tab and ensure 50ms is selected. This will export the run data in a format that can be processed by the application.
 ![alt text](https://github.com/bgriggs/wrl-dyno-ckeck/blob/main/BigMission.WrlDynoCheck/BigMission.WrlDynoCheck/Assets/screenshot-dynojet-export-options.png?raw=true)
+
+# Disclaimer of Liability
+
+The calculations provided by this software are for informational purposes only and are not guaranteed to be accurate. The software is provided "as is" without any warranties of any kind, either express or implied, including but not limited to the implied warranties of merchantability, fitness for a particular purpose, and non-infringement. The developers and distributors of this software assume no responsibility for errors or omissions in the calculations and shall not be held liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including, but not limited to, procurement of substitute goods or services; loss of use, data, or profits; or business interruption) however caused and on any theory of liability, whether in contract, strict liability, or tort (including negligence or otherwise) arising in any way out of the use of this software, even if advised of the possibility of such damage.
+
+By using this software, you agree that you are doing so at your own risk and that you will be solely responsible for any consequences arising from such use.
